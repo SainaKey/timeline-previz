@@ -2,10 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace UGUITimeline
 {
-    public class Clip : MonoBehaviour
+    public class Clip : MonoBehaviour, IDragHandler
     {
         [SerializeField] private Timeline timeline;
         [Space]
@@ -13,8 +14,9 @@ namespace UGUITimeline
         [SerializeField] private float endTime;
         [SerializeField] private float clipLengthOfTime;
 
-        [Space] [SerializeField] 
-        private RectTransform clipRect;
+        [Space] 
+        [SerializeField] private Canvas canvas;
+        [SerializeField] private RectTransform clipRect;
         [SerializeField] private RectTransform clipLineRect;
 
         [Space] [Header("Debug")] 
@@ -73,6 +75,14 @@ namespace UGUITimeline
         private void OnInactive()
         {
             debugObj.SetActive(false);
+        }
+
+        public void OnDrag(PointerEventData eventData)
+        {
+            var deltaPos = new Vector3(eventData.delta.x, eventData.delta.y, 0) / canvas.scaleFactor;
+            var pos = clipRect.localPosition;
+            pos.x += deltaPos.x;
+            clipRect.localPosition = pos;
         }
     }
 }
