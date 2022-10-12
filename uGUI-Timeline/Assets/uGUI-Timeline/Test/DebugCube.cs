@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace UGUITimeline
 {
-    public class CubeRot : MonoBehaviour
+    public class DebugCube : MonoBehaviour
     {
         [SerializeField]
         [Tooltip("x軸の回転角度")]
@@ -24,6 +24,23 @@ namespace UGUITimeline
             // X,Y,Z軸に対してそれぞれ、指定した角度ずつ回転させている。
             // deltaTimeをかけることで、フレームごとではなく、1秒ごとに回転するようにしている。
             gameObject.transform.Rotate(new Vector3(rotateX, rotateY, rotateZ) * Time.deltaTime);
+        }
+
+        public void StartActive()
+        {
+            Debug.Log("start");
+            gameObject.SetActive(true);
+        }
+
+        public void UpdateActive()
+        {
+            Debug.Log("update");
+        }
+
+        public void EndActive()
+        {
+            Debug.Log("end");
+            gameObject.SetActive(false);
         }
     }
 }

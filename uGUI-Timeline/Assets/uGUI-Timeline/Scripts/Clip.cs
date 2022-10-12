@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 namespace UGUITimeline
@@ -10,24 +11,55 @@ namespace UGUITimeline
     {
         [SerializeField] private Timeline timeline;
         [Space]
-        [SerializeField] private float startTime;
-        [SerializeField] private float endTime;
-        [SerializeField] private float clipLengthOfTime;
+        private float startTime;
+        private float endTime;
+        private float clipLengthOfTime;
 
         [Space] 
         [SerializeField] private Canvas canvas;
         [SerializeField] private RectTransform clipRect;
         [SerializeField] private RectTransform clipLineRect;
 
-        [Space] [Header("Debug")] 
-        [SerializeField] private GameObject debugObj;
-        
+        [Space] 
+        [SerializeField] private UnityEvent onStart;
+        [SerializeField] private UnityEvent during;
+        [SerializeField] private UnityEvent onEnd;
+        private bool isStart = false;
+
         public void SetCurrentTime(float time)
         {
             if (time >= startTime && endTime >= time)
-                OnActive();
-            else 
-                OnInactive();
+            {
+                OnStart();
+                During();
+            }
+            else
+            {
+                OnEnd();
+            }
+        }
+
+        private void OnStart()
+        {
+            if (!isStart)
+            {
+                isStart = true;
+                onStart.Invoke();
+            }
+        }
+
+        private void During()
+        {
+            during.Invoke();
+        }
+
+        private void OnEnd()
+        {
+            if (isStart)
+            {
+                isStart = false;
+                onEnd.Invoke();
+            }
         }
         
         private void Update()
@@ -66,16 +98,7 @@ namespace UGUITimeline
         }
 
         
-
-        private void OnActive()
-        {
-            debugObj.SetActive(true);
-        }
-
-        private void OnInactive()
-        {
-            debugObj.SetActive(false);
-        }
+        
 
         public void OnDrag(PointerEventData eventData)
         {
