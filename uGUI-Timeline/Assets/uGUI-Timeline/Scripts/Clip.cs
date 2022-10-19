@@ -7,6 +7,12 @@ using UnityEngine.EventSystems;
 
 namespace UGUITimeline
 {
+    [System.Serializable]
+    public class ClipData
+    {
+        public string guidStr;
+    }
+    
     public class Clip : MonoBehaviour, IDragHandler
     {
         [SerializeField] private Timeline timeline;
@@ -21,9 +27,10 @@ namespace UGUITimeline
         [SerializeField] private RectTransform clipLineRect;
 
         [Space] 
-        [SerializeField] private UnityEvent onStart;
-        [SerializeField] private UnityEvent during;
-        [SerializeField] private UnityEvent onEnd;
+        [SerializeField] private ClipData clipData;
+        [SerializeField] private UnityEvent<ClipData> onStartClip;
+        [SerializeField] private UnityEvent<ClipData> duringClip;
+        [SerializeField] private UnityEvent<ClipData> onEndClip;
         private bool isStart = false;
 
         public void SetCurrentTime(float time)
@@ -44,13 +51,13 @@ namespace UGUITimeline
             if (!isStart)
             {
                 isStart = true;
-                onStart.Invoke();
+                onStartClip.Invoke(clipData);
             }
         }
 
         private void During()
         {
-            during.Invoke();
+            duringClip.Invoke(clipData);
         }
 
         private void OnEnd()
@@ -58,7 +65,7 @@ namespace UGUITimeline
             if (isStart)
             {
                 isStart = false;
-                onEnd.Invoke();
+                onEndClip.Invoke(clipData);
             }
         }
         
@@ -96,10 +103,7 @@ namespace UGUITimeline
             startTime = timeline.LengthOfTime * startRatio;
             endTime = startTime + clipLengthOfTime;
         }
-
         
-        
-
         public void OnDrag(PointerEventData eventData)
         {
             var deltaPos = new Vector3(eventData.delta.x, eventData.delta.y, 0) / canvas.scaleFactor;
