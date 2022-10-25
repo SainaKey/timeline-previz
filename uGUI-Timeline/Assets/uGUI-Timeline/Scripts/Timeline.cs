@@ -47,6 +47,16 @@ namespace UGUITimeline
                     track.SetCurrentTime(currentTime);
                 }
             }
+            else
+            {
+                if (currentTime >= lengthOfTime)
+                    currentTime = 0;
+                
+                foreach (var track in tracks)
+                {
+                    track.SetCurrentTime(currentTime);
+                }
+            }
         }
 
         private void SetLengthOfTime(string tex)

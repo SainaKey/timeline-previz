@@ -17,14 +17,16 @@ namespace UGUITimeline
     {
         [SerializeField] private Timeline timeline;
         [Space]
-        private float startTime;
-        private float endTime;
-        private float clipLengthOfTime;
+        [Header("DebugView")]
+        [SerializeField] private float startTime;
+        [SerializeField] private float endTime;
+        [SerializeField] private float clipLengthOfTime;
 
         [Space] 
         [SerializeField] private Canvas canvas;
         [SerializeField] private RectTransform clipRect;
         [SerializeField] private RectTransform clipLineRect;
+        [SerializeField] private RectTransform tracksScalerRect;
 
         [Space] 
         [SerializeField] private ClipData clipData;
@@ -106,10 +108,13 @@ namespace UGUITimeline
         
         public void OnDrag(PointerEventData eventData)
         {
-            var deltaPos = new Vector3(eventData.delta.x, eventData.delta.y, 0) / canvas.scaleFactor;
-            var pos = clipRect.localPosition;
-            pos.x += deltaPos.x;
-            clipRect.localPosition = pos;
+            if (eventData.button == PointerEventData.InputButton.Left)
+            {
+                var deltaPos = new Vector3(eventData.delta.x, eventData.delta.y, 0) / canvas.scaleFactor / tracksScalerRect.localScale.x;
+                var pos = clipRect.localPosition;
+                pos.x += deltaPos.x;
+                clipRect.localPosition = pos;
+            }
         }
     }
 }

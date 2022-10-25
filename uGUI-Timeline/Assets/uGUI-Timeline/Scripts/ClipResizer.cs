@@ -30,41 +30,42 @@ namespace UGUITimeline
 
         public void OnDrag(PointerEventData eventData)
         {
-            //clipの端のworldPosとマウスのworldPosを得てなんやかんやすると良さそう
-            //var deltaPos = new Vector3(delta.x, delta.y, 0) / (canvas.scaleFactor);
-            var screenPoint = eventData.position;
-            var worldPoint = Vector3.zero;
-            RectTransformUtility.ScreenPointToWorldPointInRectangle(clipRectTrans, screenPoint, camera, out worldPoint);
-            
-            //rectの右上取りたい
-            Vector3[] v = new Vector3[4];
-            clipRectTrans.GetWorldCorners(v);
-            //Debug.Log("右上"+v[3]);
-            
-            if (isRight)
+            if (eventData.button == PointerEventData.InputButton.Left)
             {
-                var deltaPos = v[3].x - worldPoint.x / canvas.scaleFactor;
-                var sizeDelta = clipRectTrans.sizeDelta;
-                sizeDelta.x -= (deltaPos * 2.0f / 3.0f) ;
-                clipRectTrans.sizeDelta = sizeDelta;
-
-                var localPos = clipRectTrans.localPosition;
-                localPos.x -= (deltaPos * 1.0f / 3.0f) ;
-                clipRectTrans.localPosition = localPos;
-            }
-            else
-            {
-                var deltaPos = v[0].x - worldPoint.x / canvas.scaleFactor;
-                var sizeDelta = clipRectTrans.sizeDelta;
-                sizeDelta.x += (deltaPos * 2.0f / 3.0f) ;
-                clipRectTrans.sizeDelta = sizeDelta;
-
-                var localPos = clipRectTrans.localPosition;
-                localPos.x -= (deltaPos * 1.0f / 3.0f) ;
-                clipRectTrans.localPosition = localPos;
-            }
+                //clipの端のworldPosとマウスのworldPosを得てなんやかんやすると良さそう
+                //var deltaPos = new Vector3(delta.x, delta.y, 0) / (canvas.scaleFactor);
+                var screenPoint = eventData.position;
+                var worldPoint = Vector3.zero;
+                RectTransformUtility.ScreenPointToWorldPointInRectangle(clipRectTrans, screenPoint, camera, out worldPoint);
             
+                //rectの右上取りたい
+                Vector3[] v = new Vector3[4];
+                clipRectTrans.GetWorldCorners(v);
+                //Debug.Log("右上"+v[3]);
+            
+                if (isRight)
+                {
+                    var deltaPos = v[3].x - worldPoint.x / canvas.scaleFactor;
+                    var sizeDelta = clipRectTrans.sizeDelta;
+                    sizeDelta.x -= (deltaPos * 2.0f / 3.0f) ;
+                    clipRectTrans.sizeDelta = sizeDelta;
 
+                    var localPos = clipRectTrans.localPosition;
+                    localPos.x -= (deltaPos * 1.0f / 3.0f) ;
+                    clipRectTrans.localPosition = localPos;
+                }
+                else
+                {
+                    var deltaPos = v[0].x - worldPoint.x / canvas.scaleFactor;
+                    var sizeDelta = clipRectTrans.sizeDelta;
+                    sizeDelta.x += (deltaPos * 2.0f / 3.0f) ;
+                    clipRectTrans.sizeDelta = sizeDelta;
+
+                    var localPos = clipRectTrans.localPosition;
+                    localPos.x -= (deltaPos * 1.0f / 3.0f) ;
+                    clipRectTrans.localPosition = localPos;
+                }
+            }
         }
         
     }

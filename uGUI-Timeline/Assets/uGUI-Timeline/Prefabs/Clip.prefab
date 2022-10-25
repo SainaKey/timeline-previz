@@ -105,6 +105,7 @@ GameObject:
   - component: {fileID: 2972058757143831507}
   - component: {fileID: 2972058757143831516}
   - component: {fileID: 2972058757143831506}
+  - component: {fileID: 8067809491748154489}
   m_Layer: 5
   m_Name: Clip
   m_TagString: Untagged
@@ -184,18 +185,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeline: {fileID: 0}
+  startTime: 0
+  endTime: 0
+  clipLengthOfTime: 0
   canvas: {fileID: 0}
   clipRect: {fileID: 2972058757143831517}
   clipLineRect: {fileID: 0}
-  onStart:
+  clipData:
+    guidStr: 
+  onStartClip:
     m_PersistentCalls:
       m_Calls: []
-  during:
+  duringClip:
     m_PersistentCalls:
       m_Calls: []
-  onEnd:
+  onEndClip:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8067809491748154489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2972058757143831518}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 1, g: 0, b: 0, a: 0.5}
+  m_EffectDistance: {x: 2, y: 2}
+  m_UseGraphicAlpha: 1
 --- !u!1 &2972058757283512928
 GameObject:
   m_ObjectHideFlags: 0
