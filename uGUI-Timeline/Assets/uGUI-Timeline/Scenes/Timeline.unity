@@ -1158,6 +1158,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29c43bb8edd869046a84d3b18af82043, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvas: {fileID: 1649944140}
   trackScalerRect: {fileID: 1761647355}
   sliderHandleRect: {fileID: 1067923967}
   scaleMax: 2
@@ -3070,6 +3071,11 @@ PrefabInstance:
       objectReference: {fileID: 1707857974}
     - target: {fileID: 2972058757143831506, guid: 1c146680502f0524594ac275c9cc92b7,
         type: 3}
+      propertyPath: tracksScalerRect
+      value: 
+      objectReference: {fileID: 1761647355}
+    - target: {fileID: 2972058757143831506, guid: 1c146680502f0524594ac275c9cc92b7,
+        type: 3}
       propertyPath: onEnd.m_PersistentCalls.m_Calls.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -3392,6 +3398,31 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8067809491748154489, guid: 1c146680502f0524594ac275c9cc92b7,
+        type: 3}
+      propertyPath: m_EffectColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8067809491748154489, guid: 1c146680502f0524594ac275c9cc92b7,
+        type: 3}
+      propertyPath: m_EffectColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8067809491748154489, guid: 1c146680502f0524594ac275c9cc92b7,
+        type: 3}
+      propertyPath: m_EffectColor.r
+      value: 0.59720945
+      objectReference: {fileID: 0}
+    - target: {fileID: 8067809491748154489, guid: 1c146680502f0524594ac275c9cc92b7,
+        type: 3}
+      propertyPath: m_EffectDistance.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8067809491748154489, guid: 1c146680502f0524594ac275c9cc92b7,
+        type: 3}
+      propertyPath: m_EffectDistance.y
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []

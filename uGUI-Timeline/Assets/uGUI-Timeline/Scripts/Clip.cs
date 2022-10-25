@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 namespace UGUITimeline
 {
@@ -13,7 +15,7 @@ namespace UGUITimeline
         public string guidStr;
     }
     
-    public class Clip : MonoBehaviour, IDragHandler
+    public class Clip : MonoBehaviour, IBeginDragHandler , IDragHandler , IPointerClickHandler , IPointerEnterHandler , IPointerExitHandler
     {
         [SerializeField] private Timeline timeline;
         [Space]
@@ -27,13 +29,16 @@ namespace UGUITimeline
         [SerializeField] private RectTransform clipRect;
         [SerializeField] private RectTransform clipLineRect;
         [SerializeField] private RectTransform tracksScalerRect;
+        [SerializeField] private Outline outline;
 
         [Space] 
         [SerializeField] private ClipData clipData;
         [SerializeField] private UnityEvent<ClipData> onStartClip;
         [SerializeField] private UnityEvent<ClipData> duringClip;
         [SerializeField] private UnityEvent<ClipData> onEndClip;
+        [SerializeField] private UnityEvent<ClipData> onSelect;
         private bool isStart = false;
+        private bool isEnterPointer = false;
 
         public void SetCurrentTime(float time)
         {
@@ -75,6 +80,7 @@ namespace UGUITimeline
         {
             SetClipLengthOfTime();
             SetClipStartEndTime();
+            TryUnselect();
         }
 
         private void SetClipLengthOfTime()
@@ -106,6 +112,11 @@ namespace UGUITimeline
             endTime = startTime + clipLengthOfTime;
         }
         
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            Select();
+        }
+        
         public void OnDrag(PointerEventData eventData)
         {
             if (eventData.button == PointerEventData.InputButton.Left)
@@ -116,5 +127,33 @@ namespace UGUITimeline
                 clipRect.localPosition = pos;
             }
         }
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            Select();
+        }
+
+        private void Select()
+        {
+            outline.enabled = true;
+            onSelect.Invoke(clipData);
+        }
+
+        private void TryUnselect()
+        {
+            if (!isEnterPointer && Input.GetMouseButtonDown(0))
+                outline.enabled = false;
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            isEnterPointer = true;
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            isEnterPointer = false;
+        }
+
+        
     }
 }
