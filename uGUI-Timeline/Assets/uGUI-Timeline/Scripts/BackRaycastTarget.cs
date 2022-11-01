@@ -6,12 +6,25 @@ using UnityEngine.EventSystems;
 
 namespace UGUITimeline
 {
-    public class IntermediateRayRange : MonoBehaviour
+    public class BackRaycastTarget : MonoBehaviour
     {
-        [SerializeField] private EventSystem eventSystem;
-        [SerializeField] private List<Track> tracks;
-        private GameObject obj;
+        [SerializeField] private float scaleDelta;
+        [SerializeField] private EventSystem eventSystem; 
+        private List<Track> tracks;
         
+        public List<Track> Tracks
+        {
+            set { tracks = value; }
+        }
+
+        private void Start()
+        {
+            if (scaleDelta <= 0.0f)
+            {
+                scaleDelta = 10;
+            }
+        }
+
         private void Update()
         {
             if (eventSystem.IsPointerOverGameObject())
@@ -19,13 +32,12 @@ namespace UGUITimeline
                 var scroll = Input.mouseScrollDelta.y;
                 if (scroll > 0)
                 {
-                   //Debug.Log("Šg‘å");
-                   ExpansionTracksUI();
+                    ShrinkTracksUI();
                 }
                 else if(scroll < 0)
                 {
-                    //Debug.Log("k¬");
-                    ShrinkTracksUI();
+                    ExpansionTracksUI();
+                    
                 }
             }
         }
@@ -36,7 +48,7 @@ namespace UGUITimeline
             {
                 var rectTrans = track.GetComponent<RectTransform>();
                 var sizeDelta = rectTrans.sizeDelta;
-                sizeDelta.x -= 10;
+                sizeDelta.x -= scaleDelta;
                 rectTrans.sizeDelta = sizeDelta;
             }
         }
@@ -47,7 +59,7 @@ namespace UGUITimeline
             {
                 var rectTrans = track.GetComponent<RectTransform>();
                 var sizeDelta = rectTrans.sizeDelta;
-                sizeDelta.x += 10;
+                sizeDelta.x += scaleDelta;
                 rectTrans.sizeDelta = sizeDelta;
             }
         }

@@ -2040,7 +2040,7 @@ GameObject:
   - component: {fileID: 698534032}
   - component: {fileID: 698534034}
   m_Layer: 5
-  m_Name: IntermediateRayRange
+  m_Name: BackRaycastTarget
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2116,9 +2116,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bde0929624b7a0048805ca2537b4b0b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scaleDelta: 30
   eventSystem: {fileID: 1895778853}
-  tracks:
-  - {fileID: 1924456734}
 --- !u!1 &723692431
 GameObject:
   m_ObjectHideFlags: 0
@@ -4644,6 +4643,7 @@ MonoBehaviour:
   lengthOfTimeInputField: {fileID: 225048196}
   seekSlider: {fileID: 437490706}
   playToggle: {fileID: 107619611}
+  backRaycastTarget: {fileID: 698534034}
   tracks:
   - {fileID: 1924456734}
 --- !u!114 &1550117566
@@ -6033,6 +6033,7 @@ MonoBehaviour:
   lengthOfTimeInputField: {fileID: 1920758002}
   seekSlider: {fileID: 1507127683}
   playToggle: {fileID: 2048536393}
+  backRaycastTarget: {fileID: 0}
   tracks:
   - {fileID: 723692433}
 --- !u!1001 &2972058757055032987

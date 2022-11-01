@@ -15,6 +15,7 @@ namespace UGUITimeline
         [SerializeField] private TMP_InputField lengthOfTimeInputField;
         [SerializeField] private Slider seekSlider;
         [SerializeField] private Toggle playToggle;
+        [SerializeField] private BackRaycastTarget backRaycastTarget;
         [SerializeField] private List<Track> tracks;
 
         public float LengthOfTime
@@ -30,6 +31,8 @@ namespace UGUITimeline
             lengthOfTimeInputField.onEndEdit.AddListener(tex => SetLengthOfTime(tex));
             seekSlider.onValueChanged.AddListener(value => OnSeekSliderChanged(value));
             playToggle.onValueChanged.AddListener(value => OnPlayToggleChanged(value));
+
+            backRaycastTarget.Tracks = tracks;
         }
 
         private void Update()
