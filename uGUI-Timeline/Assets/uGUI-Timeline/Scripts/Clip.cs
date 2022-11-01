@@ -120,7 +120,7 @@ namespace UGUITimeline
             
             posXRatio = clipRect.localPosition.x / trackRect.rect.width;
             widthRatio = clipRect.sizeDelta.x / trackRect.rect.width;
-            Debug.Log(trackRect.rect.width);
+            //Debug.Log(trackRect.rect.width);
         }
 
         private float beforeTrackWidth = 0;
@@ -129,7 +129,7 @@ namespace UGUITimeline
             //Trackを監視して、サイズが変更されたら比を元に良い感じにする
             if (beforeTrackWidth != trackRect.rect.width)
             {
-                Debug.Log("is Changed");
+                //Debug.Log("is Changed");
                 //pxr = x / width;
                 //x = pxr * width;
                 var rect = trackRect.rect;
