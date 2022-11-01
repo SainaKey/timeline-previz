@@ -16,10 +16,15 @@ namespace UGUITimeline
     public class Clip : MonoBehaviour, IDragHandler
     {
         [SerializeField] private Timeline timeline;
+        [SerializeField] private Track track;
+        private RectTransform trackRect;
         [Space]
-        private float startTime;
-        private float endTime;
-        private float clipLengthOfTime;
+        [SerializeField] private float startTime;
+        [SerializeField] private float endTime;
+        [SerializeField] private float clipLengthOfTime;
+        
+        [SerializeField] private float posXRatio;//clipPosX/trackWidth
+        [SerializeField] private float widthRatio;//clipWidth/trackWidth
 
         [Space] 
         [SerializeField] private Canvas canvas;
@@ -32,6 +37,8 @@ namespace UGUITimeline
         [SerializeField] private UnityEvent<ClipData> duringClip;
         [SerializeField] private UnityEvent<ClipData> onEndClip;
         private bool isStart = false;
+
+        
 
         public void SetCurrentTime(float time)
         {
@@ -69,8 +76,16 @@ namespace UGUITimeline
             }
         }
         
+        private void Start()
+        {
+            trackRect = track.GetComponent<RectTransform>();
+            SetClipLengthOfTime();
+            SetClipStartEndTime();
+        }
+
         private void Update()
         {
+            BeConsistentRectRatio();
             SetClipLengthOfTime();
             SetClipStartEndTime();
         }
@@ -102,6 +117,32 @@ namespace UGUITimeline
 
             startTime = timeline.LengthOfTime * startRatio;
             endTime = startTime + clipLengthOfTime;
+            
+            posXRatio = clipRect.localPosition.x / trackRect.rect.width;
+            widthRatio = clipRect.sizeDelta.x / trackRect.rect.width;
+            Debug.Log(trackRect.rect.width);
+        }
+
+        private float beforeTrackWidth = 0;
+        private void BeConsistentRectRatio()
+        {
+            //Trackを監視して、サイズが変更されたら比を元に良い感じにする
+            if (beforeTrackWidth != trackRect.rect.width)
+            {
+                Debug.Log("is Changed");
+                //pxr = x / width;
+                //x = pxr * width;
+                var rect = trackRect.rect;
+                var x = posXRatio * rect.width;
+                var width = widthRatio * rect.width;
+                var pos = clipRect.localPosition;
+                pos.x = x;
+                clipRect.localPosition = pos;
+                var sizeDelta = clipRect.sizeDelta;
+                sizeDelta.x = width;
+                clipRect.sizeDelta = sizeDelta;
+            }
+            beforeTrackWidth = trackRect.rect.width;
         }
         
         public void OnDrag(PointerEventData eventData)

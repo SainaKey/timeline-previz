@@ -109,11 +109,11 @@ MonoBehaviour:
     m_Recordable: 0
     m_PostExtrapolationMode: 1
     m_PreExtrapolationMode: 1
-    m_PostExtrapolationTime: 0.8666666666666663
+    m_PostExtrapolationTime: 1.1833333333333336
     m_PreExtrapolationTime: 0
     m_DisplayName: Test1
   - m_Version: 1
-    m_Start: 5.866666666666666
+    m_Start: 6.183333333333334
     m_ClipIn: 0
     m_Asset: {fileID: 5159213806605590250}
     m_Duration: 5
