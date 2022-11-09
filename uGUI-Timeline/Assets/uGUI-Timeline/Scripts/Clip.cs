@@ -42,6 +42,10 @@ namespace UGUITimeline
         private bool isStart = false;
         [SerializeField] private bool isSelect = false;
 
+        public ClipData ClipData
+        {
+            get { return this.clipData; }
+        }
         public bool IsSelect
         {
             get { return this.isSelect; }

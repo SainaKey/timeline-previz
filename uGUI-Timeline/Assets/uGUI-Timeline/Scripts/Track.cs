@@ -43,7 +43,10 @@ namespace UGUITimeline
 
         public void DeleteClip(Clip clip)
         {
-            clips.Remove(clip);
+            var clipListTmp = new List<Clip>(clips);
+            clipListTmp.Remove(clip);
+            clips = clipListTmp;
+            //clips.Remove(clip);
             Destroy(clip.gameObject);
         }
     }
