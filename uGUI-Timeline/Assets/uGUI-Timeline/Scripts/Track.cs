@@ -12,6 +12,10 @@ namespace UGUITimeline
         [SerializeField] private RectTransform clipLineRect;
         [SerializeField] private GameObject clipPrefab;
 
+        public List<Clip> Clips
+        {
+            get { return this.clips; }
+        }
         public RectTransform ClipLineRect
         {
             get { return this.clipLineRect; }

@@ -14,12 +14,12 @@ namespace UGUITimeline
         public string guidStr;
     }
     
-    public class Clip : MonoBehaviour, IDragHandler , IPointerClickHandler 
+    public class Clip : MonoBehaviour, IDragHandler , ISelectable
     {
         [SerializeField] private Timeline timeline;
         [SerializeField] private Track track;
         private RectTransform trackRect;
-        private Outline outline;
+        [SerializeField] private Outline outline;
         [Space]
         [SerializeField] private float startTime;
         [SerializeField] private float endTime;
@@ -35,12 +35,17 @@ namespace UGUITimeline
 
         [Space] 
         [SerializeField] private ClipData clipData;
+        [SerializeField] public UnityEvent<ClipData> onSelect;
         [SerializeField] public UnityEvent<ClipData> onStartClip;
         [SerializeField] public UnityEvent<ClipData> duringClip;
         [SerializeField] public UnityEvent<ClipData> onEndClip;
         private bool isStart = false;
+        [SerializeField] private bool isSelect = false;
 
-        
+        public bool IsSelect
+        {
+            get { return this.isSelect; }
+        }
 
         public void SetCurrentTime(float time)
         {
@@ -98,7 +103,6 @@ namespace UGUITimeline
 
         private void InitClip()
         {
-            outline = GetComponent<Outline>();
             timeline = GetComponentInParent<Timeline>();
             track = GetComponentInParent<Track>();
             canvas = GetComponentInParent<Canvas>();
@@ -200,7 +204,27 @@ namespace UGUITimeline
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            Select();
+        }
+
+        public void Select()
+        {
+            foreach (var c in track.Clips)
+            {
+                if(c.IsSelect)
+                    c.UnSelect();
+            }
             
+            outline.enabled = true;
+            isSelect = true;
+            onSelect.Invoke(clipData);
+            Debug.Log(clipData.guidStr);
+        }
+
+        public void UnSelect()
+        {
+            outline.enabled = false;
+            isSelect = false;
         }
     }
 }

@@ -93,6 +93,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeline: {fileID: 0}
   track: {fileID: 0}
+  outline: {fileID: 7669707421753072426}
   startTime: 0
   endTime: 0
   clipLengthOfTime: 0
