@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace UGUITimeline
 {
@@ -13,11 +14,12 @@ namespace UGUITimeline
         public string guidStr;
     }
     
-    public class Clip : MonoBehaviour, IDragHandler
+    public class Clip : MonoBehaviour, IDragHandler , IPointerClickHandler 
     {
         [SerializeField] private Timeline timeline;
         [SerializeField] private Track track;
         private RectTransform trackRect;
+        private Outline outline;
         [Space]
         [SerializeField] private float startTime;
         [SerializeField] private float endTime;
@@ -33,9 +35,9 @@ namespace UGUITimeline
 
         [Space] 
         [SerializeField] private ClipData clipData;
-        [SerializeField] private UnityEvent<ClipData> onStartClip;
-        [SerializeField] private UnityEvent<ClipData> duringClip;
-        [SerializeField] private UnityEvent<ClipData> onEndClip;
+        [SerializeField] public UnityEvent<ClipData> onStartClip;
+        [SerializeField] public UnityEvent<ClipData> duringClip;
+        [SerializeField] public UnityEvent<ClipData> onEndClip;
         private bool isStart = false;
 
         
@@ -75,10 +77,14 @@ namespace UGUITimeline
                 onEndClip.Invoke(clipData);
             }
         }
+
+        private void Awake()
+        {
+            InitClip();
+        }
         
         private void Start()
         {
-            trackRect = track.GetComponent<RectTransform>();
             SetClipLengthOfTime();
             SetClipStartEndTime();
         }
@@ -88,6 +94,17 @@ namespace UGUITimeline
             BeConsistentRectRatio();
             SetClipLengthOfTime();
             SetClipStartEndTime();
+        }
+
+        private void InitClip()
+        {
+            outline = GetComponent<Outline>();
+            timeline = GetComponentInParent<Timeline>();
+            track = GetComponentInParent<Track>();
+            canvas = GetComponentInParent<Canvas>();
+            clipLineRect = track.ClipLineRect;
+            clipData.guidStr = Guid.NewGuid().ToString("N");
+            trackRect = track.GetComponent<RectTransform>();
         }
 
         private void SetClipLengthOfTime()
@@ -123,6 +140,34 @@ namespace UGUITimeline
             //Debug.Log(trackRect.rect.width);
         }
 
+        public void SetClipPosFromTime(float startT, float duration)
+        {
+            Debug.Log(startT);
+            /*
+            if (startT > timeline.LengthOfTime)
+            {
+                Debug.LogError("The starttime of the clip is longer than the length of the timeline.");
+            }
+
+            if (startT + duration > timeline.LengthOfTime)
+            {
+                Debug.LogError("The endtime of the clip is longer than the length of the timeline.");
+            }
+            */
+
+            float wholeWidth = clipLineRect.rect.width;//‘S‘Ì‚Ì’·‚³
+            
+            var startRatio = startT / timeline.LengthOfTime;
+            var startXPos = startRatio * wholeWidth;
+            var anchoredPos = clipRect.anchoredPosition;
+            anchoredPos.x = startXPos  + (clipRect.sizeDelta.x / 2.0f);
+            clipRect.anchoredPosition = anchoredPos;
+
+            var sizeDelta = clipRect.sizeDelta;
+            sizeDelta.x = duration * clipLineRect.rect.width / timeline.LengthOfTime;
+            clipRect.sizeDelta = sizeDelta;
+        }
+
         private float beforeTrackWidth = 0;
         private void BeConsistentRectRatio()
         {
@@ -151,6 +196,11 @@ namespace UGUITimeline
             var pos = clipRect.localPosition;
             pos.x += deltaPos.x;
             clipRect.localPosition = pos;
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            
         }
     }
 }

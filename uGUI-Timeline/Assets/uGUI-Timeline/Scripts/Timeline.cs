@@ -74,5 +74,10 @@ namespace UGUITimeline
         {
             isPlay = b;
         }
+
+        public void CreateClip(Track targetTrack, float startTime, float duration)
+        {
+            targetTrack.CreateClip(startTime,duration);
+        }
     }
 }
