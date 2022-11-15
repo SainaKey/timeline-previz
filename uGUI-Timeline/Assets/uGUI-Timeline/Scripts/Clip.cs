@@ -12,6 +12,7 @@ namespace UGUITimeline
     public class ClipData
     {
         public string GuidStr;
+        public float Progress;
     }
     
     public class Clip : MonoBehaviour, IDragHandler , ISelectable
@@ -37,7 +38,7 @@ namespace UGUITimeline
         [SerializeField] private ClipData clipData;
         [SerializeField] public UnityEvent<ClipData> onSelect;
         [SerializeField] public UnityEvent<ClipData> onStartClip;
-        [SerializeField] public UnityEvent<ClipData,float> duringClip;
+        [SerializeField] public UnityEvent<ClipData> duringClip;
         [SerializeField] public UnityEvent<ClipData> onEndClip;
         private bool isStart = false;
         [SerializeField] private bool isSelect = false;
@@ -69,6 +70,7 @@ namespace UGUITimeline
             if (!isStart)
             {
                 isStart = true;
+                clipData.Progress = 0.0f;
                 onStartClip.Invoke(clipData);
             }
         }
@@ -77,8 +79,8 @@ namespace UGUITimeline
         {
             
             var progress = (time - startTime) / clipLengthOfTime;
-            //Debug.Log(progress);
-            duringClip.Invoke(clipData,progress);
+            clipData.Progress = progress;
+            duringClip.Invoke(clipData);
         }
 
         private void OnEnd()
@@ -86,6 +88,7 @@ namespace UGUITimeline
             if (isStart)
             {
                 isStart = false;
+                clipData.Progress = 1.0f;
                 onEndClip.Invoke(clipData);
             }
         }
@@ -115,6 +118,7 @@ namespace UGUITimeline
             canvas = GetComponentInParent<Canvas>();
             clipLineRect = track.ClipLineRect;
             clipData.GuidStr = Guid.NewGuid().ToString("N");
+            clipData.Progress = 0.0f;
             trackRect = track.GetComponent<RectTransform>();
         }
 

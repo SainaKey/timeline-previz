@@ -8,9 +8,9 @@ namespace UGUITimeline
     public class ClipDebugUI : MonoBehaviour
     {
         [SerializeField] private TMP_Text text;
-        public void SetText(ClipData clipData , float v)
+        public void SetText(ClipData clipData)
         {
-            text.text = v.ToString();
+            text.text = clipData.Progress.ToString();
         }
     }
 }
