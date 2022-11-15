@@ -16,7 +16,7 @@ namespace UGUITimeline
             foreach (var clip in track.Clips)
             {
                 if (clip.IsSelect)
-                    text.text = clip.ClipData.guidStr;
+                    text.text = clip.ClipData.GuidStr;
             }
         }
     }

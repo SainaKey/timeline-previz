@@ -11,7 +11,7 @@ namespace UGUITimeline
     [System.Serializable]
     public class ClipData
     {
-        public string guidStr;
+        public string GuidStr;
     }
     
     public class Clip : MonoBehaviour, IDragHandler , ISelectable
@@ -37,7 +37,7 @@ namespace UGUITimeline
         [SerializeField] private ClipData clipData;
         [SerializeField] public UnityEvent<ClipData> onSelect;
         [SerializeField] public UnityEvent<ClipData> onStartClip;
-        [SerializeField] public UnityEvent<ClipData> duringClip;
+        [SerializeField] public UnityEvent<ClipData,float> duringClip;
         [SerializeField] public UnityEvent<ClipData> onEndClip;
         private bool isStart = false;
         [SerializeField] private bool isSelect = false;
@@ -56,7 +56,7 @@ namespace UGUITimeline
             if (time >= startTime && endTime >= time)
             {
                 OnStart();
-                During();
+                During(time);
             }
             else
             {
@@ -73,9 +73,12 @@ namespace UGUITimeline
             }
         }
 
-        private void During()
+        private void During(float time)
         {
-            duringClip.Invoke(clipData);
+            
+            var progress = (time - startTime) / clipLengthOfTime;
+            //Debug.Log(progress);
+            duringClip.Invoke(clipData,progress);
         }
 
         private void OnEnd()
@@ -111,7 +114,7 @@ namespace UGUITimeline
             track = GetComponentInParent<Track>();
             canvas = GetComponentInParent<Canvas>();
             clipLineRect = track.ClipLineRect;
-            clipData.guidStr = Guid.NewGuid().ToString("N");
+            clipData.GuidStr = Guid.NewGuid().ToString("N");
             trackRect = track.GetComponent<RectTransform>();
         }
 
@@ -150,7 +153,7 @@ namespace UGUITimeline
 
         public void SetClipPosFromTime(float startT, float duration)
         {
-            Debug.Log(startT);
+            //Debug.Log(startT);
             /*
             if (startT > timeline.LengthOfTime)
             {
@@ -222,7 +225,7 @@ namespace UGUITimeline
             outline.enabled = true;
             isSelect = true;
             onSelect.Invoke(clipData);
-            Debug.Log(clipData.guidStr);
+            Debug.Log(clipData.GuidStr);
         }
 
         public void UnSelect()
