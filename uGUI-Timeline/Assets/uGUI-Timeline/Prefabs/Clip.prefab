@@ -435,6 +435,7 @@ MonoBehaviour:
   isRight: 1
   camera: {fileID: 0}
   canvas: {fileID: 0}
+  clip: {fileID: 2119753538585133051}
   clipRectTrans: {fileID: 2119753538585133044}
 --- !u!1 &2119753539429751244
 GameObject:
@@ -528,6 +529,7 @@ MonoBehaviour:
   isRight: 0
   camera: {fileID: 0}
   canvas: {fileID: 0}
+  clip: {fileID: 2119753538585133051}
   clipRectTrans: {fileID: 2119753538585133044}
 --- !u!1 &4620750966475003237
 GameObject:

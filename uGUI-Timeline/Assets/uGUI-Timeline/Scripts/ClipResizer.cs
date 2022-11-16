@@ -12,6 +12,7 @@ namespace UGUITimeline
         [Space] 
         [SerializeField] private Camera camera;
         [SerializeField] private Canvas canvas;
+        [SerializeField] private Clip clip;
         [SerializeField] private RectTransform clipRectTrans;
 
         private void Start()
@@ -40,10 +41,19 @@ namespace UGUITimeline
             Vector3[] v = new Vector3[4];
             clipRectTrans.GetWorldCorners(v);
             //Debug.Log("âEè„"+v[3]);
+
+            var ct = clip.CheckClipTouch2Track();
             
             if (isRight)
             {
                 var deltaPos = v[3].x - worldPoint.x / canvas.scaleFactor;
+
+                if (ct.isRightTouch)
+                {
+                    if (deltaPos < 0)
+                        return;
+                }
+                
                 var sizeDelta = clipRectTrans.sizeDelta;
                 sizeDelta.x -= (deltaPos * 2.0f / 3.0f) ;
                 clipRectTrans.sizeDelta = sizeDelta;
@@ -55,6 +65,13 @@ namespace UGUITimeline
             else
             {
                 var deltaPos = v[0].x - worldPoint.x / canvas.scaleFactor;
+                
+                if (ct.isLeftTouch)
+                {
+                    if (deltaPos > 0)
+                        return;
+                }
+                
                 var sizeDelta = clipRectTrans.sizeDelta;
                 sizeDelta.x += (deltaPos * 2.0f / 3.0f) ;
                 clipRectTrans.sizeDelta = sizeDelta;

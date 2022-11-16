@@ -209,8 +209,44 @@ namespace UGUITimeline
         {
             var deltaPos = new Vector3(eventData.delta.x, eventData.delta.y, 0) / canvas.scaleFactor;
             var pos = clipRect.localPosition;
+            
+            var ct = CheckClipTouch2Track();
+            if (ct.isLeftTouch)
+            {
+                if (deltaPos.x < 0)
+                    return;
+            }
+            if (ct.isRightTouch)
+            {
+                if (deltaPos.x > 0)
+                    return;
+            }
+            
             pos.x += deltaPos.x;
             clipRect.localPosition = pos;
+        }
+
+        public (bool isLeftTouch, bool isRightTouch) CheckClipTouch2Track()
+        {
+            Vector3[] clipWorldCorners = new Vector3[4];
+            clipRect.GetWorldCorners(clipWorldCorners);
+            
+            Vector3[] trackWorldCorners = new Vector3[4];
+            trackRect.GetWorldCorners(trackWorldCorners);
+
+            var clipLeft = clipWorldCorners[1];
+            var clipRight = clipWorldCorners[3];
+            
+            var trackLeft = trackWorldCorners[1];
+            var trackRight = trackWorldCorners[3];
+            
+            (bool isLeftTouch, bool isRightTouch) result = (false, false);
+            if (clipLeft.x < trackLeft.x)
+                result.isLeftTouch = true;
+            if (clipRight.x > trackRight.x)
+                result.isRightTouch = true;
+
+            return result;
         }
 
         public void OnPointerClick(PointerEventData eventData)
