@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -42,6 +43,9 @@ namespace UGUITimeline
         [SerializeField] public UnityEvent<ClipData> onEndClip;
         private bool isStart = false;
         [SerializeField] private bool isSelect = false;
+
+        [Header("UI")] 
+        [SerializeField] private CanvasGroup canvasGroup;
 
         public ClipData ClipData
         {
@@ -270,12 +274,19 @@ namespace UGUITimeline
             isSelect = true;
             onSelect.Invoke(clipData);
             Debug.Log(clipData.GuidStr);
+
+            canvasGroup.interactable = true;
+            canvasGroup.blocksRaycasts = true;
         }
 
         public void UnSelect()
         {
             outline.enabled = false;
             isSelect = false;
+            
+            //inputField.interactable = false;
+            canvasGroup.interactable = false;
+            canvasGroup.blocksRaycasts = false;
         }
     }
 }

@@ -1095,7 +1095,7 @@ GameObject:
   - component: {fileID: 546211096}
   - component: {fileID: 546211099}
   - component: {fileID: 546211098}
-  - component: {fileID: 546211097}
+  - component: {fileID: 546211100}
   m_Layer: 5
   m_Name: Track (1)
   m_TagString: Untagged
@@ -1124,36 +1124,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -47.5}
   m_SizeDelta: {x: 0, y: -95}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &546211097
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 546211095}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.2901961, g: 0.2901961, b: 0.2901961, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!222 &546211098
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1178,6 +1148,33 @@ MonoBehaviour:
   clipLineRect: {fileID: 1625048017}
   clipPrefab: {fileID: 2119753538585133047, guid: 1c146680502f0524594ac275c9cc92b7,
     type: 3}
+--- !u!114 &546211100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 546211095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Texture: {fileID: 2800000, guid: 022385722f88c004b9305e1333bf733f, type: 3}
+  m_UVRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
 --- !u!1 &594385335
 GameObject:
   m_ObjectHideFlags: 0
@@ -3590,7 +3587,7 @@ MonoBehaviour:
   lengthOfTimeInputField: {fileID: 225048196}
   seekSlider: {fileID: 437490706}
   playToggle: {fileID: 107619611}
-  backRaycastTarget: {fileID: 698534034}
+  timeLineBackRaycastTarget: {fileID: 0}
   tracks:
   - {fileID: 1924456734}
   - {fileID: 546211099}
@@ -3799,7 +3796,7 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0
+  m_Intensity: 47.746483
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208

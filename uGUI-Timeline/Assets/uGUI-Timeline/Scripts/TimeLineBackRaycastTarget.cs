@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 namespace UGUITimeline
 {
-    public class BackRaycastTarget : MonoBehaviour
+    public class TimeLineBackRaycastTarget : MonoBehaviour
     {
         [SerializeField] private RectTransform tracksRect;
         [SerializeField] private float scaleDelta;
