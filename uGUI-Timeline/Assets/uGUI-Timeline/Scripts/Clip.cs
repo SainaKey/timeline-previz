@@ -256,11 +256,15 @@ namespace UGUITimeline
 
         public void Select()
         {
-            foreach (var c in track.Clips)
+            foreach (var t in timeline.Tracks)
             {
-                if(c.IsSelect)
-                    c.UnSelect();
+                foreach (var c in t.Clips)
+                {
+                    if(c.IsSelect)
+                        c.UnSelect();
+                }
             }
+            
             
             outline.enabled = true;
             isSelect = true;

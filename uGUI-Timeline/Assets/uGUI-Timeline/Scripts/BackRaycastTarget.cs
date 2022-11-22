@@ -8,6 +8,7 @@ namespace UGUITimeline
 {
     public class BackRaycastTarget : MonoBehaviour
     {
+        [SerializeField] private RectTransform tracksRect;
         [SerializeField] private float scaleDelta;
         [SerializeField] private EventSystem eventSystem; 
         private List<Track> tracks;
@@ -44,6 +45,7 @@ namespace UGUITimeline
 
         private void ExpansionTracksUI()
         {
+            /*
             foreach (var track in tracks)
             {
                 var rectTrans = track.GetComponent<RectTransform>();
@@ -51,10 +53,16 @@ namespace UGUITimeline
                 sizeDelta.x -= scaleDelta;
                 rectTrans.sizeDelta = sizeDelta;
             }
+            */
+            
+            var sizeDelta = tracksRect.sizeDelta;
+            sizeDelta.x -= scaleDelta;
+            tracksRect.sizeDelta = sizeDelta;
         }
 
         private void ShrinkTracksUI()
         {
+            /*
             foreach (var track in tracks)
             {
                 var rectTrans = track.GetComponent<RectTransform>();
@@ -62,6 +70,10 @@ namespace UGUITimeline
                 sizeDelta.x += scaleDelta;
                 rectTrans.sizeDelta = sizeDelta;
             }
+            */
+            var sizeDelta = tracksRect.sizeDelta;
+            sizeDelta.x += scaleDelta;
+            tracksRect.sizeDelta = sizeDelta;
         }
     }
 }

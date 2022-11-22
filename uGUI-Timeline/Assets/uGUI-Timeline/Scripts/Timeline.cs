@@ -22,6 +22,11 @@ namespace UGUITimeline
         {
             get { return this.lengthOfTime; }
         }
+
+        public List<Track> Tracks
+        {
+            get { return this.tracks; }
+        }
         private void Start()
         {
             lengthOfTimeInputField.text = lengthOfTime.ToString();
