@@ -17,7 +17,7 @@ namespace UGUITimeline
         public float Progress;
     }
     
-    public class Clip : MonoBehaviour, IDragHandler , ISelectable
+    public class Clip : MonoBehaviour, IDragHandler , ISelectable , IEndDragHandler
     {
         [SerializeField] private Timeline timeline;
         [SerializeField] private Track track;
@@ -202,9 +202,6 @@ namespace UGUITimeline
             //Trackを監視して、サイズが変更されたら比を元に良い感じにする
             if (beforeTrackWidth != trackRect.rect.width)
             {
-                //Debug.Log("is Changed");
-                //pxr = x / width;
-                //x = pxr * width;
                 var rect = trackRect.rect;
                 var x = posXRatio * rect.width;
                 var width = widthRatio * rect.width;
@@ -217,9 +214,117 @@ namespace UGUITimeline
             }
             beforeTrackWidth = trackRect.rect.width;
         }
+
+        private bool IsOverlapOtherClip()
+        {
+            bool isOverlap = false;
+            //他のclipと重なっているか判定する
+            //自分のworldCornersのどれかが相手のrectの中に入ってたら重なってる
+            Vector3[] clipWorldCorners = new Vector3[4];
+            clipRect.GetWorldCorners(clipWorldCorners);
+
+            Vector3[] otherClipWorldCorners = new Vector3[4];
+            foreach (var track in timeline.Tracks)
+            {
+                foreach (var clip in track.Clips)
+                {
+                    if(clip == this)
+                        continue;
+                    
+                    clip.clipRect.GetWorldCorners(otherClipWorldCorners);
+
+                    var left = otherClipWorldCorners[0];
+                    var right = otherClipWorldCorners[3];
+                    foreach (var clipWorldCorner in clipWorldCorners)
+                    {
+                        if (clipWorldCorner.x > left.x && clipWorldCorner.x < right.x)
+                            isOverlap = true;
+                    }
+                }
+            }
+
+            return isOverlap;
+        }
+
+        private Vector3 GetSnapPos()
+        {
+            //一番近いsnap先を手に入れる
+            //自分の右端と相手の左端
+            //自分の左端と相手の右端
+            //距離が近い方にスナップする
+            Vector3 result = clipRect.localPosition;
+            bool snapToRight = false;
+            RectTransform otherClipRect = null;
+
+            Vector3[] clipWorldCorners = new Vector3[4];
+            clipRect.GetWorldCorners(clipWorldCorners);
+            
+            Vector3[] otherClipWorldCorners = new Vector3[4];
+            float minDist = float.MaxValue;
+            foreach (var track in timeline.Tracks)
+            {
+                foreach (var clip in track.Clips)
+                {
+                    if(clip == this)
+                        continue;
+                    
+                    clip.clipRect.GetWorldCorners(otherClipWorldCorners);
+
+                    var left = otherClipWorldCorners[0];
+                    var right = otherClipWorldCorners[3];
+
+                    var thisLeft = clipWorldCorners[0];
+                    var thisRight = clipWorldCorners[3];
+
+                    //差が0以下の場合は重なってない
+                    var dist0 = thisRight.x - left.x;
+                    var dist1 = right.x - thisLeft.x;
+
+                    if (dist0 <= 0)
+                        dist0 = float.MaxValue;
+                    if (dist1 <= 0)
+                        dist1 = float.MaxValue;
+
+                    if (dist0 < minDist || dist1 < minDist)
+                    {
+                        if (dist0 < dist1)
+                        {
+                            minDist = dist0;
+                            snapToRight = false;
+                            otherClipRect = clip.clipRect;
+                        }
+                        else if (dist0 > dist1)
+                        {
+                            minDist = dist1;
+                            snapToRight = true;
+                            otherClipRect = clip.clipRect;
+                        }
+                        
+                    }
+                    
+                }
+            }
+
+            if (snapToRight)
+            {
+                //相手の右端にsnap
+                //相手のpos*2/3 +　width*1/3 = 自分のpos*2/3 - width*1/3になれば良い
+                result.x = (((otherClipRect.localPosition.x * 2f / 3f) + (otherClipRect.sizeDelta.x * 1f / 3f)) + (clipRect.sizeDelta.x * 1f / 3f)) / (2f / 3f);
+                //result.x= (otherClipRect.localPosition.x * 2f / 3f + otherClipRect.sizeDelta.x * 1f / 3f) + (clipRect.sizeDelta.x * 1f / 3f) / (2f / 3f);
+            }
+            else
+            {
+                //相手の左端にsnap
+                //自分のpos*2/3 + width * 1/3が相手のpos*2/3 - width * 1/3になれば良い
+                result.x = ((otherClipRect.localPosition.x*2f/3f - otherClipRect.sizeDelta.x * 1f/3f) - (clipRect.sizeDelta.x * 1f/3f)) / (2f/3f);
+            }
+
+            return result;
+        }
         
         public void OnDrag(PointerEventData eventData)
         {
+            Select();
             var deltaPos = new Vector3(eventData.delta.x, eventData.delta.y, 0) / canvas.scaleFactor;
             var pos = clipRect.localPosition;
             
@@ -235,59 +340,19 @@ namespace UGUITimeline
                     return;
             }
 
-            /*
-            var cc = CheckClipTouchOnOtherClip();
-            if (cc.isLeftTouch)
-            {
-                Debug.Log("L");
-                
-                if (deltaPos.x < 0)
-                    return;
-                    
-            }
-            if (cc.isRightTouch)
-            {
-                Debug.Log("R");
-                
-                if (deltaPos.x > 0)
-                    return;
-                    
-            }
-            */
-            
             pos.x += deltaPos.x;
             clipRect.localPosition = pos;
         }
-
-        public (bool isLeftTouch, bool isRightTouch) CheckClipTouchOnOtherClip()
+        
+        public void OnEndDrag(PointerEventData eventData)
         {
-            Vector3[] clipWorldCorners = new Vector3[4];
-            clipRect.GetWorldCorners(clipWorldCorners);
-            
-            (bool isLeftTouch, bool isRightTouch) result = (false, false);
-            
-            foreach (var otherClip in track.Clips)
+            if (IsOverlapOtherClip())
             {
-                if (otherClip == this)
-                {
-                    Debug.Log("this");
-                    continue;
-                }
-                Vector3[] otherClipWorldCorners = new Vector3[4];
-                otherClip.clipRect.GetWorldCorners(otherClipWorldCorners);
-                if (clipWorldCorners[0].x <= otherClipWorldCorners[2].x)
-                {
-                    result.isLeftTouch = true;
-                }
-
-                if (otherClipWorldCorners[0].x <= clipWorldCorners[2].x)
-                {
-                    result.isRightTouch = true;
-                }
+                clipRect.localPosition = GetSnapPos();
             }
-            
-            return result;
         }
+        
+        
         public (bool isLeftTouch, bool isRightTouch) CheckClipTouchOnTrack()
         {
             Vector3[] clipWorldCorners = new Vector3[4];
@@ -369,7 +434,6 @@ namespace UGUITimeline
         {
             image.color = color;
         }
-
         
     }
 }
