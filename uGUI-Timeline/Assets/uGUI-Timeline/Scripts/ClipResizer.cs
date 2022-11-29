@@ -113,7 +113,6 @@ namespace UGUITimeline
             if (clip.IsOverlapOtherClip())
             {
                 var snapTarget = clip.GetSnapTarget();
-                var sizeDelta = clipRectTrans.sizeDelta;
                 if (snapTarget.snapToRight)
                 {
                     clipRectTrans.localPosition = maxLocalPos;
