@@ -46,6 +46,7 @@ namespace UGUITimeline
         private bool isStart = false;
         [SerializeField] private bool isSelect = false;
         private bool isMouseOn = false;
+        Vector3 lastPos = Vector3.zero;
 
         [Header("UI")] 
         [SerializeField] private CanvasGroup canvasGroup;
@@ -109,6 +110,7 @@ namespace UGUITimeline
         {
             SetClipLengthOfTime();
             SetClipStartEndTime();
+            lastPos = trackRect.localPosition;
         }
 
         private void Update()
@@ -215,7 +217,38 @@ namespace UGUITimeline
             beforeTrackWidth = trackRect.rect.width;
         }
 
-        private bool IsOverlapOtherClip()
+        public bool IsCrossOverOtherClip()
+        {
+            bool isCrossOver = false;
+            //snap出来る範囲を超えてたら一個前の状態に戻す
+            Vector3[] clipWorldCorners = new Vector3[4];
+            clipRect.GetWorldCorners(clipWorldCorners);
+            
+            Vector3[] otherClipWorldCorners = new Vector3[4];
+            foreach (var track in timeline.Tracks)
+            {
+                foreach (var clip in track.Clips)
+                {
+                    if(clip == this)
+                        continue;
+                    
+                    clip.clipRect.GetWorldCorners(otherClipWorldCorners);
+
+                    var left = otherClipWorldCorners[0];
+                    var right = otherClipWorldCorners[3];
+
+                    var thisLeft = clipWorldCorners[0];
+                    var thisRight = clipWorldCorners[3];
+
+                    if (thisLeft.x < left.x && thisRight.x > right.x)
+                        isCrossOver = true;
+                }
+            }
+
+            return isCrossOver;
+        }
+
+        public bool IsOverlapOtherClip()
         {
             bool isOverlap = false;
             //他のclipと重なっているか判定する
@@ -246,13 +279,12 @@ namespace UGUITimeline
             return isOverlap;
         }
 
-        private Vector3 GetSnapPos()
+        public (bool snapToRight , RectTransform targetRect) GetSnapTarget()
         {
             //一番近いsnap先を手に入れる
             //自分の右端と相手の左端
             //自分の左端と相手の右端
             //距離が近い方にスナップする
-            Vector3 result = clipRect.localPosition;
             bool snapToRight = false;
             RectTransform otherClipRect = null;
 
@@ -279,11 +311,12 @@ namespace UGUITimeline
                     //差が0以下の場合は重なってない
                     var dist0 = thisRight.x - left.x;
                     var dist1 = right.x - thisLeft.x;
-
+                    
                     if (dist0 <= 0)
                         dist0 = float.MaxValue;
                     if (dist1 <= 0)
                         dist1 = float.MaxValue;
+                        
 
                     if (dist0 < minDist || dist1 < minDist)
                     {
@@ -299,27 +332,10 @@ namespace UGUITimeline
                             snapToRight = true;
                             otherClipRect = clip.clipRect;
                         }
-                        
                     }
-                    
                 }
             }
-
-            if (snapToRight)
-            {
-                //相手の右端にsnap
-                //相手のpos*2/3 +　width*1/3 = 自分のpos*2/3 - width*1/3になれば良い
-                result.x = (((otherClipRect.localPosition.x * 2f / 3f) + (otherClipRect.sizeDelta.x * 1f / 3f)) + (clipRect.sizeDelta.x * 1f / 3f)) / (2f / 3f);
-                //result.x= (otherClipRect.localPosition.x * 2f / 3f + otherClipRect.sizeDelta.x * 1f / 3f) + (clipRect.sizeDelta.x * 1f / 3f) / (2f / 3f);
-            }
-            else
-            {
-                //相手の左端にsnap
-                //自分のpos*2/3 + width * 1/3が相手のpos*2/3 - width * 1/3になれば良い
-                result.x = ((otherClipRect.localPosition.x*2f/3f - otherClipRect.sizeDelta.x * 1f/3f) - (clipRect.sizeDelta.x * 1f/3f)) / (2f/3f);
-            }
-
-            return result;
+            return (snapToRight,otherClipRect);
         }
         
         public void OnDrag(PointerEventData eventData)
@@ -344,12 +360,36 @@ namespace UGUITimeline
             clipRect.localPosition = pos;
         }
         
+        
+        
         public void OnEndDrag(PointerEventData eventData)
         {
             if (IsOverlapOtherClip())
             {
-                clipRect.localPosition = GetSnapPos();
+                var snapTarget =  GetSnapTarget();
+                var pos = clipRect.localPosition;
+                if (snapTarget.snapToRight)
+                {
+                    //相手の右端にsnap
+                    //相手のpos*2/3 +　width*1/3 = 自分のpos*2/3 - width*1/3になれば良い
+                    pos.x = (((snapTarget.targetRect.localPosition.x * 2f / 3f) + (snapTarget.targetRect.sizeDelta.x * 1f / 3f)) + (clipRect.sizeDelta.x * 1f / 3f)) / (2f / 3f);
+                    //result.x= (otherClipRect.localPosition.x * 2f / 3f + otherClipRect.sizeDelta.x * 1f / 3f) + (clipRect.sizeDelta.x * 1f / 3f) / (2f / 3f);
+                }
+                else
+                {
+                    //相手の左端にsnap
+                    //自分のpos*2/3 + width * 1/3が相手のpos*2/3 - width * 1/3になれば良い
+                    pos.x = ((snapTarget.targetRect.localPosition.x*2f/3f - snapTarget.targetRect.sizeDelta.x * 1f/3f) - (clipRect.sizeDelta.x * 1f/3f)) / (2f/3f);
+                }
+                clipRect.localPosition = pos;
             }
+
+            if (IsCrossOverOtherClip())
+            {
+                clipRect.localPosition = lastPos;
+            }
+
+            lastPos = clipRect.localPosition;
         }
         
         

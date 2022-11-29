@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 namespace UGUITimeline
 {
-    public class ClipResizer : MonoBehaviour , IDragHandler
+    public class ClipResizer : MonoBehaviour , IDragHandler , IEndDragHandler , IBeginDragHandler
     {
         [SerializeField] private bool isRight;
         [Space] 
@@ -14,6 +14,12 @@ namespace UGUITimeline
         [SerializeField] private Canvas canvas;
         [SerializeField] private Clip clip;
         [SerializeField] private RectTransform clipRectTrans;
+        private Vector3 lastPos = Vector3.zero;
+        private Vector2 lastSizeDelta = Vector2.zero;
+
+        private bool isMaxFirst = true;
+        private Vector3 maxLocalPos = Vector3.zero;
+        private Vector2 maxSizeDelta = Vector2.zero;
 
         private void Start()
         {
@@ -27,8 +33,16 @@ namespace UGUITimeline
             {
                 camera = canvas.worldCamera;
             }
+            
+            lastPos = clipRectTrans.localPosition;
+            lastSizeDelta = clipRectTrans.sizeDelta;
         }
 
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            lastPos = clipRectTrans.localPosition;
+        }
+        
         public void OnDrag(PointerEventData eventData)
         {
             //clipの端のworldPosとマウスのworldPosを得てなんやかんやすると良さそう
@@ -80,9 +94,52 @@ namespace UGUITimeline
                 localPos.x -= (deltaPos * 1.0f / 3.0f) ;
                 clipRectTrans.localPosition = localPos;
             }
+
+            if (clip.IsOverlapOtherClip())
+            {
+                if (isMaxFirst)
+                {
+                    maxLocalPos = clipRectTrans.localPosition;
+                    maxSizeDelta = clipRectTrans.sizeDelta;
+                    isMaxFirst = false;
+                }
+            }
             
 
         }
         
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            if (clip.IsOverlapOtherClip())
+            {
+                var snapTarget = clip.GetSnapTarget();
+                var sizeDelta = clipRectTrans.sizeDelta;
+                if (snapTarget.snapToRight)
+                {
+                    clipRectTrans.localPosition = maxLocalPos;
+                    clipRectTrans.sizeDelta = maxSizeDelta;
+                }
+                else
+                {
+                    clipRectTrans.localPosition = maxLocalPos;
+                    clipRectTrans.sizeDelta = maxSizeDelta;
+                }
+            }
+            else
+            {
+                if (clip.IsCrossOverOtherClip())
+                {
+                    clipRectTrans.localPosition = lastPos;
+                    clipRectTrans.sizeDelta = lastSizeDelta;
+                }
+
+            }
+            
+            lastPos = clipRectTrans.localPosition;
+            lastSizeDelta = clipRectTrans.sizeDelta;
+            isMaxFirst = true;
+        }
+
+       
     }
 }
