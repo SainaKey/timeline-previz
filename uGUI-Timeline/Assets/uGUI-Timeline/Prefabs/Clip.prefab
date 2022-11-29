@@ -230,6 +230,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeline: {fileID: 0}
   track: {fileID: 0}
+  image: {fileID: 2119753538585133045}
   outline: {fileID: 7669707421753072426}
   startTime: 0
   endTime: 0

@@ -42,7 +42,7 @@ namespace UGUITimeline
             clipRectTrans.GetWorldCorners(v);
             //Debug.Log("âEè„"+v[3]);
 
-            var ct = clip.CheckClipTouch2Track();
+            var ct = clip.CheckClipTouchOnTrack();
             
             if (isRight)
             {

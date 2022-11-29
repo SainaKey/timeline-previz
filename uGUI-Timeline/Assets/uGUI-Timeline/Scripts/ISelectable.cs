@@ -6,7 +6,7 @@ using UnityEngine.Serialization;
 
 namespace UGUITimeline
 {
-    public interface ISelectable : IPointerClickHandler
+    public interface ISelectable : IPointerClickHandler , IPointerEnterHandler , IPointerExitHandler
     {
         public void Select();
         public void UnSelect();

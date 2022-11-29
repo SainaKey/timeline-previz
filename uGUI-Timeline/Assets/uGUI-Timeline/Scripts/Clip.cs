@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 namespace UGUITimeline
 {
@@ -21,6 +22,7 @@ namespace UGUITimeline
         [SerializeField] private Timeline timeline;
         [SerializeField] private Track track;
         private RectTransform trackRect;
+        [SerializeField] private Image image;
         [SerializeField] private Outline outline;
         [Space]
         [SerializeField] private float startTime;
@@ -43,6 +45,7 @@ namespace UGUITimeline
         [SerializeField] public UnityEvent<ClipData> onEndClip;
         private bool isStart = false;
         [SerializeField] private bool isSelect = false;
+        private bool isMouseOn = false;
 
         [Header("UI")] 
         [SerializeField] private CanvasGroup canvasGroup;
@@ -113,6 +116,12 @@ namespace UGUITimeline
             BeConsistentRectRatio();
             SetClipLengthOfTime();
             SetClipStartEndTime();
+            if(Input.GetKeyDown(KeyCode.Mouse0))
+                if (!isMouseOn)
+                {
+                    UnSelect();
+                }
+            
         }
 
         private void InitClip()
@@ -214,7 +223,7 @@ namespace UGUITimeline
             var deltaPos = new Vector3(eventData.delta.x, eventData.delta.y, 0) / canvas.scaleFactor;
             var pos = clipRect.localPosition;
             
-            var ct = CheckClipTouch2Track();
+            var ct = CheckClipTouchOnTrack();
             if (ct.isLeftTouch)
             {
                 if (deltaPos.x < 0)
@@ -225,12 +234,61 @@ namespace UGUITimeline
                 if (deltaPos.x > 0)
                     return;
             }
+
+            /*
+            var cc = CheckClipTouchOnOtherClip();
+            if (cc.isLeftTouch)
+            {
+                Debug.Log("L");
+                
+                if (deltaPos.x < 0)
+                    return;
+                    
+            }
+            if (cc.isRightTouch)
+            {
+                Debug.Log("R");
+                
+                if (deltaPos.x > 0)
+                    return;
+                    
+            }
+            */
             
             pos.x += deltaPos.x;
             clipRect.localPosition = pos;
         }
 
-        public (bool isLeftTouch, bool isRightTouch) CheckClipTouch2Track()
+        public (bool isLeftTouch, bool isRightTouch) CheckClipTouchOnOtherClip()
+        {
+            Vector3[] clipWorldCorners = new Vector3[4];
+            clipRect.GetWorldCorners(clipWorldCorners);
+            
+            (bool isLeftTouch, bool isRightTouch) result = (false, false);
+            
+            foreach (var otherClip in track.Clips)
+            {
+                if (otherClip == this)
+                {
+                    Debug.Log("this");
+                    continue;
+                }
+                Vector3[] otherClipWorldCorners = new Vector3[4];
+                otherClip.clipRect.GetWorldCorners(otherClipWorldCorners);
+                if (clipWorldCorners[0].x <= otherClipWorldCorners[2].x)
+                {
+                    result.isLeftTouch = true;
+                }
+
+                if (otherClipWorldCorners[0].x <= clipWorldCorners[2].x)
+                {
+                    result.isRightTouch = true;
+                }
+            }
+            
+            return result;
+        }
+        public (bool isLeftTouch, bool isRightTouch) CheckClipTouchOnTrack()
         {
             Vector3[] clipWorldCorners = new Vector3[4];
             clipRect.GetWorldCorners(clipWorldCorners);
@@ -245,17 +303,36 @@ namespace UGUITimeline
             var trackRight = trackWorldCorners[3];
             
             (bool isLeftTouch, bool isRightTouch) result = (false, false);
+            
             if (clipLeft.x < trackLeft.x)
                 result.isLeftTouch = true;
             if (clipRight.x > trackRight.x)
                 result.isRightTouch = true;
-
+            
             return result;
         }
+        
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            Debug.Log("click");
+            if (isSelect)
+            {
+                Debug.Log("is");
+                canvasGroup.interactable = true;
+                canvasGroup.blocksRaycasts = true;
+            }
             Select();
+        }
+        
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            isMouseOn = true;
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            isMouseOn = false;
         }
 
         public void Select()
@@ -264,6 +341,9 @@ namespace UGUITimeline
             {
                 foreach (var c in t.Clips)
                 {
+                    if(c == this)
+                        continue;
+                    
                     if(c.IsSelect)
                         c.UnSelect();
                 }
@@ -274,9 +354,6 @@ namespace UGUITimeline
             isSelect = true;
             onSelect.Invoke(clipData);
             Debug.Log(clipData.GuidStr);
-
-            canvasGroup.interactable = true;
-            canvasGroup.blocksRaycasts = true;
         }
 
         public void UnSelect()
@@ -284,9 +361,15 @@ namespace UGUITimeline
             outline.enabled = false;
             isSelect = false;
             
-            //inputField.interactable = false;
             canvasGroup.interactable = false;
             canvasGroup.blocksRaycasts = false;
         }
+
+        public void SetColor(Color color)
+        {
+            image.color = color;
+        }
+
+        
     }
 }
