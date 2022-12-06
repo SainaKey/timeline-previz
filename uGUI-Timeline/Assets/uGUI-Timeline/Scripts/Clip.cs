@@ -225,24 +225,22 @@ namespace UGUITimeline
             clipRect.GetWorldCorners(clipWorldCorners);
             
             Vector3[] otherClipWorldCorners = new Vector3[4];
-            foreach (var track in timeline.Tracks)
+
+            foreach (var clip in track.Clips)
             {
-                foreach (var clip in track.Clips)
-                {
-                    if(clip == this)
-                        continue;
+                if(clip == this)
+                    continue;
                     
-                    clip.clipRect.GetWorldCorners(otherClipWorldCorners);
+                clip.clipRect.GetWorldCorners(otherClipWorldCorners);
 
-                    var left = otherClipWorldCorners[0];
-                    var right = otherClipWorldCorners[3];
+                var left = otherClipWorldCorners[0];
+                var right = otherClipWorldCorners[3];
 
-                    var thisLeft = clipWorldCorners[0];
-                    var thisRight = clipWorldCorners[3];
+                var thisLeft = clipWorldCorners[0];
+                var thisRight = clipWorldCorners[3];
 
-                    if (thisLeft.x < left.x && thisRight.x > right.x)
-                        isCrossOver = true;
-                }
+                if (thisLeft.x < left.x && thisRight.x > right.x)
+                    isCrossOver = true;
             }
 
             return isCrossOver;
@@ -257,22 +255,20 @@ namespace UGUITimeline
             clipRect.GetWorldCorners(clipWorldCorners);
 
             Vector3[] otherClipWorldCorners = new Vector3[4];
-            foreach (var track in timeline.Tracks)
+            
+            foreach (var clip in track.Clips)
             {
-                foreach (var clip in track.Clips)
-                {
-                    if(clip == this)
-                        continue;
+                if(clip == this)
+                    continue;
                     
-                    clip.clipRect.GetWorldCorners(otherClipWorldCorners);
+                clip.clipRect.GetWorldCorners(otherClipWorldCorners);
 
-                    var left = otherClipWorldCorners[0];
-                    var right = otherClipWorldCorners[3];
-                    foreach (var clipWorldCorner in clipWorldCorners)
-                    {
-                        if (clipWorldCorner.x > left.x && clipWorldCorner.x < right.x)
-                            isOverlap = true;
-                    }
+                var left = otherClipWorldCorners[0];
+                var right = otherClipWorldCorners[3];
+                foreach (var clipWorldCorner in clipWorldCorners)
+                {
+                    if (clipWorldCorner.x > left.x && clipWorldCorner.x < right.x)
+                        isOverlap = true;
                 }
             }
 
