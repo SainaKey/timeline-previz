@@ -1003,6 +1003,7 @@ GameObject:
   m_Component:
   - component: {fileID: 437490705}
   - component: {fileID: 437490706}
+  - component: {fileID: 437490707}
   m_Layer: 5
   m_Name: SeekSlider
   m_TagString: Untagged
@@ -1082,6 +1083,24 @@ MonoBehaviour:
   m_WholeNumbers: 0
   m_Value: 0
   m_OnValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &437490707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 437490704}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d426621fcb13a264fb62b528e130dbb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onSeekbarClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onSeekbarRelease:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &546211095
