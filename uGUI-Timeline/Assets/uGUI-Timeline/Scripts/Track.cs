@@ -11,6 +11,7 @@ namespace UGUITimeline
         [SerializeField] private List<Clip> clips;
         [SerializeField] private RectTransform clipLineRect;
         [SerializeField] private GameObject clipPrefab;
+        private bool beforeFrameCanOverlap = false;
         public bool canOverlap = false;
 
         public List<Clip> Clips
@@ -28,7 +29,23 @@ namespace UGUITimeline
                 clip.SetCurrentTime(currentTIme);
             }
         }
-        
+
+        private void Update()
+        {
+            if (beforeFrameCanOverlap != canOverlap)
+                UpdateClipCanoverlapSetting();
+
+            beforeFrameCanOverlap = canOverlap;
+        }
+
+        private void UpdateClipCanoverlapSetting()
+        {
+            foreach (var clip in clips)
+            {
+                clip.canOverlap = canOverlap;
+            }
+        }
+
         public void CreateClip(float startTime, float duration)
         {
             var clipObj = Instantiate(clipPrefab,clipLineRect,false);
