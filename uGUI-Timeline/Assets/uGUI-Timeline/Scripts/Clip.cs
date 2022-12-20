@@ -44,6 +44,7 @@ namespace UGUITimeline
         [SerializeField] public UnityEvent<ClipData> duringClip;
         [SerializeField] public UnityEvent<ClipData> onEndClip;
         private bool isStart = false;
+        public bool canOverlap = false;
         [SerializeField] private bool isSelect = false;
         private bool isMouseOn = false;
         Vector3 lastPos = Vector3.zero;
@@ -219,6 +220,9 @@ namespace UGUITimeline
 
         public bool IsCrossOverOtherClip()
         {
+            if(canOverlap)
+                return false;
+            
             bool isCrossOver = false;
             //snap出来る範囲を超えてたら一個前の状態に戻す
             Vector3[] clipWorldCorners = new Vector3[4];
@@ -248,6 +252,9 @@ namespace UGUITimeline
 
         public bool IsOverlapOtherClip()
         {
+            if(canOverlap)
+                return false;
+            
             bool isOverlap = false;
             //他のclipと重なっているか判定する
             //自分のworldCornersのどれかが相手のrectの中に入ってたら重なってる
