@@ -11,6 +11,7 @@ namespace UGUITimeline
         [SerializeField] private List<Clip> clips;
         [SerializeField] private RectTransform clipLineRect;
         [SerializeField] private GameObject clipPrefab;
+        public bool canOverlap = false;
 
         public List<Clip> Clips
         {
@@ -34,9 +35,10 @@ namespace UGUITimeline
             //var clipObj = Instantiate(clipPrefab,Vector3.zero, Quaternion.identity,clipLineRect);
 
             var clip = clipObj.GetComponent<Clip>();
+            clip.canOverlap = canOverlap;
             clip.SetClipPosFromTime(startTime,duration);
-            clip.SetClipPosFromTime(startTime,duration);
-            //“ñ‰ñŒÄ‚Ô‚Æ³‚µ‚­“®‚­A‚È‚º...
+            //clip.SetClipPosFromTime(startTime,duration);
+            //“ñ‰ñŒÄ‚Ô‚Æ³‚µ‚­“®‚­H
             
             clips.Add(clip);
         }
