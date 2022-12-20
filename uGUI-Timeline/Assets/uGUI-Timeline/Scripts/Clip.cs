@@ -338,22 +338,40 @@ namespace UGUITimeline
         {
             Select();
             var deltaPos = new Vector3(eventData.delta.x, eventData.delta.y, 0) / canvas.scaleFactor;
-            var pos = clipRect.localPosition;
+            var pos = clipRect.anchoredPosition;
+            Debug.Log(pos);
             
+            /*
             var ct = CheckClipTouchOnTrack();
             if (ct.isLeftTouch)
             {
                 if (deltaPos.x < 0)
+                {
+                    var tmpPos = clipRect.anchoredPosition;
+                    tmpPos.x = (clipRect.sizeDelta.x * 1f / 3f) / (2f / 3f);
+                    //clipRect.anchoredPosition = tmpPos;
                     return;
+                }
+                    
             }
             if (ct.isRightTouch)
             {
                 if (deltaPos.x > 0)
+                {
+                    var tmpPos = clipRect.anchoredPosition;
+                    tmpPos.x = ((clipLineRect.rect.width*2f/3f)-(clipRect.sizeDelta.x * 1f / 3f)) / (2f / 3f);
+                    //clipRect.anchoredPosition = tmpPos;
                     return;
+                }
+                    
             }
-
-            pos.x += deltaPos.x;
-            clipRect.localPosition = pos;
+            */
+            
+            var minX = (clipRect.sizeDelta.x * 1f / 3f) / (2f / 3f);
+            var maxX = ((clipLineRect.rect.width*2f/3f)-(clipRect.sizeDelta.x * 1f / 3f)) / (2f / 3f);
+            var posX = Mathf.Clamp(pos.x + deltaPos.x,minX,maxX);
+            pos.x = posX;
+            clipRect.anchoredPosition = pos;
         }
         
         
@@ -404,12 +422,16 @@ namespace UGUITimeline
             var trackRight = trackWorldCorners[3];
             
             (bool isLeftTouch, bool isRightTouch) result = (false, false);
-            
+
             if (clipLeft.x < trackLeft.x)
+            {
                 result.isLeftTouch = true;
+            }
+
             if (clipRight.x > trackRight.x)
+            {
                 result.isRightTouch = true;
-            
+            }
             return result;
         }
         
