@@ -441,18 +441,30 @@ namespace UGUITimeline
             }
             return result;
         }
-        
 
+        
         public void OnPointerClick(PointerEventData eventData)
         {
             Debug.Log("click");
-            if (isSelect)
+            /*
+            if (isSelect && isDoubleClick)
             {
                 Debug.Log("is");
                 canvasGroup.interactable = true;
                 canvasGroup.blocksRaycasts = true;
             }
+            */
             Select();
+            canvasGroup.interactable = true;
+            canvasGroup.blocksRaycasts = true;
+            StartCoroutine(ResetDoubleClickFrag());
+        }
+
+        IEnumerator ResetDoubleClickFrag()
+        {
+            yield return new WaitForSeconds(0.2f);
+            canvasGroup.interactable = false;
+            canvasGroup.blocksRaycasts = false;
         }
         
         public void OnPointerEnter(PointerEventData eventData)
