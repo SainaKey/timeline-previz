@@ -69,7 +69,7 @@ namespace UGUITimeline
                 }
                 
                 var sizeDelta = clipRectTrans.sizeDelta;
-                sizeDelta.x -= (deltaPos * 2.0f / 3.0f) ;
+                sizeDelta.x = Mathf.Max(sizeDelta.x - (deltaPos * 2.0f / 3.0f),1) ;
                 clipRectTrans.sizeDelta = sizeDelta;
 
                 var localPos = clipRectTrans.localPosition;
@@ -87,7 +87,7 @@ namespace UGUITimeline
                 }
                 
                 var sizeDelta = clipRectTrans.sizeDelta;
-                sizeDelta.x += (deltaPos * 2.0f / 3.0f) ;
+                sizeDelta.x = Mathf.Max(sizeDelta.x + (deltaPos * 2.0f / 3.0f),1);
                 clipRectTrans.sizeDelta = sizeDelta;
 
                 var localPos = clipRectTrans.localPosition;
