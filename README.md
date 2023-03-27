@@ -7,6 +7,8 @@
 UnityのuGUIで作成されたタイムラインです。
 サンプルシーンはAssets>uGUI-Timeline>Scenes>Timelineにあります。
 
+https://user-images.githubusercontent.com/79449263/227974356-01178300-d2c0-4542-8089-27681ba6e693.mp4
+
 # チュートリアル
 サンプルシーンにて動作を確認できます。  
 タイムラインに合わせてCubeのアクティブ、非アクティブが更新されます。  
