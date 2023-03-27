@@ -291,6 +291,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  canOverlap: 0
   isSelect: 0
   canvasGroup: {fileID: 46137163328277520}
 --- !u!114 &7669707421753072426
