@@ -7,7 +7,7 @@
 UnityのuGUIで作成されたタイムラインです。
 サンプルシーンはAssets>uGUI-Timeline>Scenes>Timelineにあります。
 
-https://user-images.githubusercontent.com/79449263/227974356-01178300-d2c0-4542-8089-27681ba6e693.mp4
+https://user-images.githubusercontent.com/79449263/227987919-85ed4233-b08e-41fc-972a-386e99ae341d.mp4
 
 # チュートリアル
 サンプルシーンにて動作を確認できます。  
